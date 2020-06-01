@@ -17,3 +17,19 @@ connection.connect(function (err) {
   console.log("connected as id " + connection.threadId + "\n");
   startEmployeePrompt();
 });
+
+// prompt user for the action
+function employeePrompt(){
+    inquirer.prompt({
+        name: "action",
+        type: "list",
+        message: "Which action would you like to take?",
+        choices: [
+            "Add a department",
+            "Add a role",
+            "Add an employee",
+            "View departments",
+            "View roles",
+            "View employees",
+            "Update employee role",
+            "Exit"]
