@@ -15,7 +15,7 @@ const connection = mysql.createConnection({
 connection.connect(function (err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId + "\n");
-  startEmployeePrompt();
+  employeePrompt();
 });
 
 // prompt user for the action
@@ -33,3 +33,26 @@ function employeePrompt(){
             "View employees",
             "Update employee role",
             "Exit"]
+        }).then(function(answer){
+            console.log(answer.action);
+            switch(answer.action){
+                case "Add a department":
+                    //call addDepartment function
+                    addDepartment();
+
+
+
+// add new department
+function addDepartment(){
+    inquirer.prompt({
+        name: "newDepartment",
+        type: "input",
+        message: "Which department you would like to add?"
+    }).then(function(answer){
+        connection.query("INSERT INTO department (name) VALUES (?)", [answer.newDepartment], function(err){
+            if(err) throw err;
+            console.log(`New department - ${answer.newDepartment} created successfully!`);
+            employeePrompt();
+        })
+    });
+}
