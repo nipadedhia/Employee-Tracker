@@ -19,66 +19,141 @@ connection.connect(function (err) {
 });
 
 // prompt user for the action
-function askQuestions(){
-    inquirer.prompt({
-        name: "action",
-        type: "list",
-        message: "Which action would you like to take?",
-        choices: [
-            "Add a department",
-            "Add a role",
-            "Add an employee",
-            "View departments",
-            "View roles",
-            "View employees",
-            "Update employee role",
-            "Exit"]
-        }).then(function(answer){
-            console.log(answer.action);
-            switch(answer.action){
-                case "Add a department":
-                    //call addDepartment function
-                    addDepartment();
-                    break;
-                    //add a role function
-                    case "Add a role":
-                     // call addRole function  
-                        addRole();
+function askQuestions() {
+  inquirer
+    .prompt({
+      name: "action",
+      type: "list",
+      message: "Which action would you like to take?",
+      choices: [
+        "Add a department",
+        "Add a role",
+        "Add an employee",
+        "View departments",
+        "View roles",
+        "View employees",
+        "Update employee role",
+        "Exit",
+      ],
+    })
+    .then(function (answer) {
+      console.log(answer.action);
+      switch (answer.action) {
+        case "Add department":
+          addDepartment();
+          break;
+        case "Add role":
+          addRole();
+          break;
+        case "add employee":
+          addEmployee();
+          break;
+        case "View departments":
+          viewDepartments();
+          break;
+        case "View roles":
+          viewRoles();
+          break;
+        case "View employees":
+          viewEmployees();
+          break;
+        case "Update employee role":
+          updateEmployeeRole();
+          break;
+        case "Exit":
+          connection.end();
+          break;
+      }
+    });
+}
 
 // add new department
-function addDepartment(){
-    inquirer.prompt({
-        name: "newDepartment",
-        type: "input",
-        message: "Which department you would like to add?"
-    }).then(function(answer){
-        connection.query("INSERT INTO department (name) VALUES (?)", [answer.newDepartment], function(err){
-            if(err) throw err;
-            console.log(`New department - ${answer.newDepartment} created successfully!`);
-            askQuestions();
-        })
+function addDepartment() {
+  inquirer
+    .prompt({
+      name: "newDepartment",
+      type: "input",
+      message: "Which department you would like to add?",
+    })
+    .then(function (answer) {
+      connection.query(
+        "INSERT INTO department (name) VALUES (?)",
+        [answer.newDepartment],
+        function (err) {
+          if (err) throw err;
+          console.log(
+            `New department - ${answer.newDepartment} created successfully!`,
+          );
+          askQuestions();
+        },
+      );
     });
 }
 
 function addRole() {
-    inquirer.prompt([
-        {
-            message: "enter title:",
-            type: "input",
-            name: "title"
-        }, {
-            message: "enter salary:",
-            type: "number",
-            name: "salary"
-        }, {
-            message: "enter department ID:",
-            type: "number",
-            name: "department_id"
-        }
-    ]).then(function (response) {
-        connection.query("INSERT INTO roles (title, salary, department_id) values (?, ?, ?)", [response.title, response.salary, response.department_id], function (err, data) {
-            console.table(data);
-        })
-        askQuestions();
+  inquirer
+    .prompt([
+      {
+        message: "enter title:",
+        type: "input",
+        name: "title",
+      },
+      {
+        message: "enter salary:",
+        type: "number",
+        name: "salary",
+      },
+      {
+        message: "enter department ID:",
+        type: "number",
+        name: "department_id",
+      },
+    ])
+    .then(function (response) {
+      connection.query(
+        "INSERT INTO roles (title, salary, department_id) values (?, ?, ?)",
+        [response.title, response.salary, response.department_id],
+        function (err, data) {
+          console.table(data);
+        },
+      );
+      askQuestions();
+    });
+}
+
+function addEmployee() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "firstName",
+        message: "What is the employees first name?",
+      },
+      {
+        type: "input",
+        name: "lastName",
+        message: "What is the employees last name?",
+      },
+      {
+        type: "number",
+        name: "roleId",
+        message: "What is the employees role ID",
+      },
+      {
+        type: "number",
+        name: "managerId",
+        message: "What is the employees manager's ID?",
+      },
+    ])
+    .then(function (res) {
+      connection.query(
+        "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)",
+        [res.firstName, res.lastName, res.roleId, res.managerId],
+        function (err, data) {
+          if (err) throw err;
+          console.table("Successfully Inserted");
+          askQuestions();
+        },
+      );
     });
 }
