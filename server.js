@@ -39,8 +39,11 @@ function employeePrompt(){
                 case "Add a department":
                     //call addDepartment function
                     addDepartment();
-
-
+                    break;
+                    //add a role function
+                    case "Add a role":
+                     // call addRole function  
+                        addRole();
 
 // add new department
 function addDepartment(){
@@ -52,6 +55,31 @@ function addDepartment(){
         connection.query("INSERT INTO department (name) VALUES (?)", [answer.newDepartment], function(err){
             if(err) throw err;
             console.log(`New department - ${answer.newDepartment} created successfully!`);
+            employeePrompt();
+        })
+    });
+}
+
+// add new role
+function addRole(){
+    inquirer.prompt([{
+        name: "newRole",
+        type: "input",
+        message: "Name of the new role:"
+    }, {
+        name: "salary",
+        type: "input", 
+        message: "What is their salary?",
+        validate: validateSalary
+    }, {
+        name: "departmentID",
+        type: "input",
+        message: "What is their department id?",
+        validate: validateID
+    }]).then(function(answer){
+        connection.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [answer.newRole, answer.salary, answer.departmentID], function(err){
+            if(err) throw err;
+            console.log(`New role - ${answer.newRole} created successfully!`);
             employeePrompt();
         })
     });
