@@ -1,4 +1,5 @@
 // Dependencies
+
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const consoleTable = require("console.table");
@@ -155,5 +156,56 @@ function addEmployee() {
           askQuestions();
         },
       );
+    });
+}
+
+// view all departments
+function viewDepartments() {
+  connection.query("SELECT * FROM department", function (err, data) {
+    console.table(data);
+    askQuestions();
+  });
+}
+
+// view all roles
+function viewRoles() {
+  connection.query("SELECT * FROM role", function (err, res) {
+    if (err) throw err;
+    console.table(res);
+    startEmployeePrompt();
+  });
+}
+
+// view all employees
+function viewEmployees() {
+  connection.query("SELECT * FROM employee", function (err, data) {
+    console.table(data);
+    askQuestions();
+  });
+}
+
+function updateEmployeeRole() {
+  inquirer
+    .prompt([
+      {
+        message: "which employee would you like to update?",
+        type: "input",
+        name: "name",
+      },
+      {
+        message: "enter the new role ID:",
+        type: "number",
+        name: "role_id",
+      },
+    ])
+    .then(function (response) {
+      connection.query(
+        "UPDATE employee SET role_id = ? WHERE first_name = ?",
+        [response.role_id, response.name],
+        function (err, data) {
+          console.table(data);
+        },
+      );
+      askQuestions();
     });
 }
