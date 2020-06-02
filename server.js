@@ -15,11 +15,11 @@ const connection = mysql.createConnection({
 connection.connect(function (err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId + "\n");
-  employeePrompt();
+  askQuestions();
 });
 
 // prompt user for the action
-function employeePrompt(){
+function askQuestions(){
     inquirer.prompt({
         name: "action",
         type: "list",
@@ -55,32 +55,30 @@ function addDepartment(){
         connection.query("INSERT INTO department (name) VALUES (?)", [answer.newDepartment], function(err){
             if(err) throw err;
             console.log(`New department - ${answer.newDepartment} created successfully!`);
-            employeePrompt();
+            askQuestions();
         })
     });
 }
 
-// add new role
-function addRole(){
-    inquirer.prompt([{
-        name: "newRole",
-        type: "input",
-        message: "Name of the new role:"
-    }, {
-        name: "salary",
-        type: "input", 
-        message: "What is their salary?",
-        validate: validateSalary
-    }, {
-        name: "departmentID",
-        type: "input",
-        message: "What is their department id?",
-        validate: validateID
-    }]).then(function(answer){
-        connection.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [answer.newRole, answer.salary, answer.departmentID], function(err){
-            if(err) throw err;
-            console.log(`New role - ${answer.newRole} created successfully!`);
-            employeePrompt();
+function addRole() {
+    inquirer.prompt([
+        {
+            message: "enter title:",
+            type: "input",
+            name: "title"
+        }, {
+            message: "enter salary:",
+            type: "number",
+            name: "salary"
+        }, {
+            message: "enter department ID:",
+            type: "number",
+            name: "department_id"
+        }
+    ]).then(function (response) {
+        connection.query("INSERT INTO roles (title, salary, department_id) values (?, ?, ?)", [response.title, response.salary, response.department_id], function (err, data) {
+            console.table(data);
         })
+        askQuestions();
     });
 }
