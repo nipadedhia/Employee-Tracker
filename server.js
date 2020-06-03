@@ -26,11 +26,11 @@ function askQuestions() {
       message: "what would you like to do?",
       type: "list",
       choices: [
-        "view all employees",
-        "view all departments",
         "add employee",
         "add department",
         "add role",
+        "view all employees",
+        "view all departments",
         "update employee role",
         "QUIT",
       ],
@@ -178,8 +178,7 @@ function updateEmployeeRole() {
   inquirer
     .prompt([
       {
-        message:
-          "which employee would you like to update? (use first name only for now)",
+        message: "which employee would you like to update?",
         type: "input",
         name: "name",
       },
